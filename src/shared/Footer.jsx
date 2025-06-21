@@ -1,7 +1,10 @@
-import React from 'react'
+import React from 'react';
+import './Footer.css';
 
 export default function Footer() {
   return (
-    <div>Footer</div>
-  )
+    <footer className="footer">
+      <p>© 2024 Taru Foundation. All Rights Reserved.</p>
+    </footer>
+  );
 }
