@@ -1,31 +1,45 @@
-import express from 'express';
-import {
-  getAllProducts,
+const express = require('express');
+const router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware'); // adjust as per your structure
+
+// Controllers (you’ll need to implement or import these)
+const {
+  browseProducts,
   getRecommendedProducts,
   addToCart,
-  getCart,
+  viewCart,
   removeFromCart,
   checkout,
   verifyPayment,
   getOrders,
   trackOrder
-} from '../controllers/buyerController.js';
+} = require('../controllers/buyerController');
 
-import { protect, restrictTo } from '../middleware/authMiddleware.js';
+// Browse products with filters
+router.get('/products', authMiddleware, browseProducts);
 
-const router = express.Router();
+// Get recommended products
+router.get('/products/recommended', authMiddleware, getRecommendedProducts);
 
-router.get('/products', getAllProducts);                                      // GET /api/buyer/products
-router.get('/products/recommended', protect, restrictTo('buyer'), getRecommendedProducts); // GET /api/buyer/products/recommended
+// Add item to cart
+router.post('/cart', authMiddleware, addToCart);
 
-router.post('/cart', protect, restrictTo('buyer'), addToCart);                // POST /api/buyer/cart
-router.get('/cart', protect, restrictTo('buyer'), getCart);                   // GET /api/buyer/cart
-router.delete('/cart/:productId', protect, restrictTo('buyer'), removeFromCart); // DELETE /api/buyer/cart/:productId
+// View cart
+router.get('/cart', authMiddleware, viewCart);
 
-router.post('/checkout', protect, restrictTo('buyer'), checkout);            // POST /api/buyer/checkout
-router.post('/payment/verify', protect, restrictTo('buyer'), verifyPayment); // POST /api/buyer/payment/verify
+// Remove item from cart
+router.delete('/cart/:productId', authMiddleware, removeFromCart);
 
-router.get('/orders', protect, restrictTo('buyer'), getOrders);              // GET /api/buyer/orders
-router.get('/orders/:id/track', protect, restrictTo('buyer'), trackOrder);   // GET /api/buyer/orders/:id/track
+// Checkout (Razorpay)
+router.post('/checkout', authMiddleware, checkout);
 
-export default router;
+// Verify payment
+router.post('/payment/verify', authMiddleware, verifyPayment);
+
+// Get order history
+router.get('/orders', authMiddleware, getOrders);
+
+// Track delivery
+router.get('/orders/:id/track', authMiddleware, trackOrder);
+
+module.exports = router;

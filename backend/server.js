@@ -1,38 +1,29 @@
 const express = require('express');
-const connectDB = require('./config/db');
-require('dotenv').config();
-const cors = require('cors');
+const dotenv = require('dotenv');
+const mongoose = require('mongoose');
+const adminRoutes = require('./routes/adminRoutes');
+const authRoutes = require('./routes/authRoutes');
+
+dotenv.config();
 
 const app = express();
-
-// Connect to MongoDB
-connectDB();
-
-// Middleware
-app.use(cors());
 app.use(express.json());
 
-// Basic route to test server
-app.get('/', (req, res) => {
-  res.send('E-Commerce Platform API');
-});
-
-// Import Routes
-const authRoutes = require('./routes/authRoutes');
-const adminRoutes = require('./routes/adminRoutes');
-const sellerRoutes = require('./routes/sellerRoutes');
-const buyerRoutes = require('./routes/buyerRoutes');
-const recommendationRoutes = require('./routes/recommendationRoutes');
-
-// Register Routes
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/seller', sellerRoutes);
-app.use('/api/buyer', buyerRoutes);
-app.use('/api/recommendations', recommendationRoutes);
 
-// Start Server
-const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Connect to MongoDB
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log('✅ MongoDB connected');
+    const PORT = process.env.PORT || 5001;
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('❌ MongoDB connection failed:', err.message);
+    process.exit(1);
+  });
