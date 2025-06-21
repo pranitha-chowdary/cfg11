@@ -9,14 +9,19 @@ const {
   getOrders,
   trackOrder,
 } = require('../controllers/buyerController');
-const authMiddleware = require('../middleware/authMiddleware');
+
+const { protect } = require('../middleware/authMiddleware'); // ✅ Fixed
 
 router.get('/products', browseProducts);
-router.get('/products/recommended', authMiddleware, getRecommendedProducts);
-router.post('/cart', authMiddleware, addToCart);
-router.get('/cart', authMiddleware, viewCart);
-router.delete('/cart/:productId', authMiddleware, removeFromCart);
-router.get('/orders', authMiddleware, getOrders);
-router.get('/orders/:id/track', authMiddleware, trackOrder);
+router.get('/products/recommended', protect, getRecommendedProducts);
+router.post('/cart', protect, addToCart);
+router.get('/cart', protect, viewCart);
+router.delete('/cart/:productId', protect, removeFromCart);
+router.get('/orders', protect, getOrders);
+router.get('/orders/:id/track', protect, trackOrder);
+router.get('/test', (req, res) => {
+  res.send('✅ Buyer routes working!');
+});
+
 
 module.exports = router;

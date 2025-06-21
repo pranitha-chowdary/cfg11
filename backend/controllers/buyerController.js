@@ -34,7 +34,7 @@ const browseProducts = async (req, res) => {
 // Get recommended products
 const getRecommendedProducts = async (req, res) => {
   try {
-    const orders = await Order.find({ buyerId: req.userId }).populate('products.productId');
+    const orders = await Order.find({ buyerId: req.user.userId }).populate('products.productId');
     const categories = [...new Set(orders.flatMap(order => order.products.map(p => p.productId.category)))];
     const products = await Product.find({
       category: { $in: categories.length ? categories : ['Handicrafts', 'Food'] },
@@ -71,9 +71,9 @@ const addToCart = async (req, res) => {
       return res.status(400).json({ error: 'Insufficient stock' });
     }
 
-    let cart = await Cart.findOne({ buyerId: req.userId });
+    let cart = await Cart.findOne({ buyerId: req.user.userId });
     if (!cart) {
-      cart = new Cart({ buyerId: req.userId, items: [] });
+      cart = new Cart({ buyerId: req.user.userId, items: [] });
     }
 
     const itemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
@@ -93,7 +93,7 @@ const addToCart = async (req, res) => {
 // View cart
 const viewCart = async (req, res) => {
   try {
-    const cart = await Cart.findOne({ buyerId: req.userId }).populate('items.productId');
+    const cart = await Cart.findOne({ buyerId: req.user.userId }).populate('items.productId');
     if (!cart) {
       return res.status(404).json({ error: 'Cart not found' });
     }
@@ -113,7 +113,7 @@ const viewCart = async (req, res) => {
 // Remove product from cart
 const removeFromCart = async (req, res) => {
   try {
-    const cart = await Cart.findOne({ buyerId: req.userId });
+    const cart = await Cart.findOne({ buyerId: req.user.userId });
     if (!cart) {
       return res.status(404).json({ error: 'Cart not found' });
     }
@@ -129,7 +129,7 @@ const removeFromCart = async (req, res) => {
 // Get order history
 const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ buyerId: req.userId }).populate('products.productId');
+    const orders = await Order.find({ buyerId: req.user.userId }).populate('products.productId');
     res.json({
       orders: orders.map(order => ({
         id: order._id,
@@ -151,7 +151,7 @@ const getOrders = async (req, res) => {
 // Track delivery
 const trackOrder = async (req, res) => {
   try {
-    const order = await Order.findOne({ _id: req.params.id, buyerId: req.userId });
+    const order = await Order.findOne({ _id: req.params.id, buyerId: req.user.userId });
     if (!order) {
       return res.status(404).json({ error: 'Order not found' });
     }
