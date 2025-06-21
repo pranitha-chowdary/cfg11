@@ -1,49 +1,45 @@
 const express = require('express');
-const Razorpay = require('razorpay');
-const Order = require('../models/Order');
-const Cart = require('../models/Cart');
-const Notification = require('../models/Notification');
 const router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware'); // adjust as per your structure
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+// Controllers (you’ll need to implement or import these)
+const {
+  browseProducts,
+  getRecommendedProducts,
+  addToCart,
+  viewCart,
+  removeFromCart,
+  checkout,
+  verifyPayment,
+  getOrders,
+  trackOrder
+} = require('../controllers/buyerController');
 
-router.post('/checkout', async (req, res) => {
-  const { cartId, deliveryAddress } = req.body;
-  try {
-    const cart = await Cart.findById(cartId).populate('items.productId');
-    if (!cart) return res.status(404).json({ error: 'Cart not found' });
+// Browse products with filters
+router.get('/products', authMiddleware, browseProducts);
 
-    const totalAmount = cart.items.reduce((sum, item) => sum + item.productId.price * item.quantity, 0);
-    const order = new Order({
-      buyerId: cart.buyerId,
-      sellerId: cart.items[0].productId.sellerId,
-      products: cart.items.map(item => ({ productId: item.productId._id, quantity: item.quantity })),
-      totalAmount,
-      deliveryAddress,
-    });
-    await order.save();
+// Get recommended products
+router.get('/products/recommended', authMiddleware, getRecommendedProducts);
 
-    const rzpOrder = await razorpay.orders.create({
-      amount: totalAmount * 100, // In paise
-      currency: 'INR',
-      receipt: order._id.toString(),
-    });
+// Add item to cart
+router.post('/cart', authMiddleware, addToCart);
 
-    // Create notification for seller
-    const notification = new Notification({
-      sellerId: order.sellerId,
-      orderId: order._id,
-      message: `New order received: ${order._id}`,
-    });
-    await notification.save();
+// View cart
+router.get('/cart', authMiddleware, viewCart);
 
-    res.json({ orderId: order._id, razorpayOrderId: rzpOrder.id, amount: totalAmount });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
+// Remove item from cart
+router.delete('/cart/:productId', authMiddleware, removeFromCart);
+
+// Checkout (Razorpay)
+router.post('/checkout', authMiddleware, checkout);
+
+// Verify payment
+router.post('/payment/verify', authMiddleware, verifyPayment);
+
+// Get order history
+router.get('/orders', authMiddleware, getOrders);
+
+// Track delivery
+router.get('/orders/:id/track', authMiddleware, trackOrder);
 
 module.exports = router;
