@@ -1,21 +1,23 @@
 const express = require('express');
+const router = express.Router();
+
+// ✅ Import the required controller functions
 const {
   getAnalytics,
   appointShgSeller,
   updateShgSeller,
-  deleteShgSeller
+  removeShgSeller
 } = require('../controllers/adminController');
 
-const {
-  protect,
-  restrictTo
-} = require('../middleware/authMiddleware');
+// ✅ Use the proper middleware
+const { protect, restrictTo } = require('../middleware/authMiddleware');
+const authMiddleware = protect;
+const adminMiddleware = restrictTo('admin');
 
-const router = express.Router();
-
-router.get('/analytics', protect, restrictTo('admin'), getAnalytics);
-router.post('/shg', protect, restrictTo('admin'), appointShgSeller);
-router.put('/shg/:id', protect, restrictTo('admin'), updateShgSeller);
-router.delete('/shg/:id', protect, restrictTo('admin'), deleteShgSeller);
+// ✅ Define routes
+router.get('/analytics', authMiddleware, adminMiddleware, getAnalytics);
+router.post('/shg', authMiddleware, adminMiddleware, appointShgSeller);
+router.put('/shg/:id', authMiddleware, adminMiddleware, updateShgSeller);
+router.delete('/shg/:id', authMiddleware, adminMiddleware, removeShgSeller);
 
 module.exports = router;

@@ -1,37 +1,37 @@
 const jwt = require('jsonwebtoken');
 
-// ✅ Middleware to protect routes and attach user info to req
+// Replace this with your actual secret key
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+
+// Protect middleware: verifies JWT and attaches user info
 const protect = (req, res, next) => {
-  let token;
+  const authHeader = req.headers.authorization;
 
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    try {
-      token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  // Check if the Authorization header exists and starts with 'Bearer'
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized: No token provided' });
+  }
 
-      // Attach consistent user structure
-      req.user = {
-        userId: decoded.userId,
-        role: decoded.role
-      };
+  const token = authHeader.split(' ')[1];
 
-      next();
-    } catch (error) {
-      return res.status(401).json({ message: 'Not authorized' });
-    }
-  } else {
-    return res.status(401).json({ message: 'No token found' });
+  try {
+    // Verify token and extract payload
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = {
+      userId: decoded.userId,
+      role: decoded.role
+    };
+    next(); // Move to next middleware or route handler
+  } catch (err) {
+    return res.status(401).json({ error: 'Unauthorized: Invalid token' });
   }
 };
 
-// ✅ Role-based access control middleware
+// restrictTo middleware: checks user role
 const restrictTo = (role) => {
   return (req, res, next) => {
-    if (req.user.role !== role) {
-      return res.status(403).json({ message: 'Access denied' });
+    if (!req.user || req.user.role !== role) {
+      return res.status(403).json({ error: 'Forbidden: Access denied' });
     }
     next();
   };
