@@ -1,5 +1,5 @@
-import express from 'express';
-import {
+const express = require('express');
+const {
   addProduct,
   updateProduct,
   deleteProduct,
@@ -7,9 +7,9 @@ import {
   getSellerOrders,
   getNotifications,
   markNotificationRead
-} from '../controllers/sellerController.js';
+} = require('../controllers/sellerController');
 
-import { protect, restrictTo } from '../middleware/authMiddleware.js';
+const { protect, restrictTo } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -21,4 +21,4 @@ router.get('/orders', protect, restrictTo('seller'), getSellerOrders);          
 router.get('/notifications', protect, restrictTo('seller'), getNotifications);       // GET /api/seller/notifications
 router.put('/notifications/:id', protect, restrictTo('seller'), markNotificationRead); // PUT /api/seller/notifications/:id
 
-export default router;
+module.exports = router;

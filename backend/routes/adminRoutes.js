@@ -1,12 +1,15 @@
-import express from 'express';
-import {
+const express = require('express');
+const {
   getAnalytics,
   appointShgSeller,
   updateShgSeller,
-  deleteShgSeller,
-} from '../controllers/adminController.js';
+  deleteShgSeller
+} = require('../controllers/adminController');
 
-import { protect, restrictTo } from '../middleware/authMiddleware.js';
+const {
+  protect,
+  restrictTo
+} = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -15,4 +18,4 @@ router.post('/shg', protect, restrictTo('admin'), appointShgSeller);
 router.put('/shg/:id', protect, restrictTo('admin'), updateShgSeller);
 router.delete('/shg/:id', protect, restrictTo('admin'), deleteShgSeller);
 
-export default router;
+module.exports = router;
