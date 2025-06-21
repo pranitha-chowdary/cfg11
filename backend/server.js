@@ -1,8 +1,11 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+
+// Route imports
 const adminRoutes = require('./routes/adminRoutes');
 const authRoutes = require('./routes/authRoutes');
+const sellerRoutes = require('./routes/sellerRoutes'); // ✅ Add this
 
 dotenv.config();
 
@@ -12,6 +15,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/seller', sellerRoutes); // ✅ Register this route
 
 // Connect to MongoDB
 mongoose
