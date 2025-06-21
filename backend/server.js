@@ -4,6 +4,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const buyerRoutes = require('./routes/buyerRoutes'); // ✅ Import using require
 const notificationsRoutes = require('./routes/notificationsRoutes');
+const authRoutes = require('./routes/authRoutes');
+
 dotenv.config();
 
 const app = express();
@@ -12,6 +14,8 @@ app.use(express.json());
 app.use('/api/buyer', buyerRoutes);
 app.use('/api/seller', notificationsRoutes);
 app.use('/api/seller', notificationsRoutes);
+app.use('/api/auth', authRoutes);
+
 
 const PORT = process.env.PORT || 5001;
 
