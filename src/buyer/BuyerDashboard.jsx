@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import './buyer.css';
 
 const BuyerDashboard = () => {
+  const [user, setUser] = useState({ name: "John Doe" }); // User Info
+  const [showDropdown, setShowDropdown] = useState(false);
+
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [stats, setStats] = useState({
@@ -20,7 +23,7 @@ const BuyerDashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      // Simulate API calls
+      // Simulated fetch
       const mockProducts = [
         {
           id: 1,
@@ -28,7 +31,7 @@ const BuyerDashboard = () => {
           price: 850,
           seller: "Lakshmi SHG",
           location: "Andhra Pradesh",
-          image: "/api/placeholder/200/200",
+          image: "https://itokri.com/cdn/shop/files/0X2A2576.jpg?crop=center&height=2000&v=1740138641&width=2000",
           rating: 4.5,
           inStock: true
         },
@@ -38,7 +41,7 @@ const BuyerDashboard = () => {
           price: 320,
           seller: "Sita SHG",
           location: "Tamil Nadu",
-          image: "/api/placeholder/200/200",
+          image: "https://www.viralspices.com/wp-content/uploads/2022/01/Evaluating-the-Differences-between-Fresh-and-Dried-Turmeric-624x312.jpg",
           rating: 4.8,
           inStock: true
         },
@@ -48,27 +51,14 @@ const BuyerDashboard = () => {
           price: 1200,
           seller: "Durga SHG",
           location: "West Bengal",
-          image: "/api/placeholder/200/200",
+          image: "https://www.terracottabysachii.com/cdn/shop/files/Sustainable_Kolkata_Terracotta_Pottery_Teaset_for_4_1.jpg?v=1723954984",
           rating: 4.3,
           inStock: false
         }
       ];
-
       const mockOrders = [
-        {
-          id: "ORD001",
-          date: "2024-06-15",
-          status: "Delivered",
-          total: 1700,
-          items: 2
-        },
-        {
-          id: "ORD002",
-          date: "2024-06-18",
-          status: "Shipped",
-          total: 320,
-          items: 1
-        }
+        { id: "ORD001", date: "2024-06-15", status: "Delivered", total: 1700, items: 2 },
+        { id: "ORD002", date: "2024-06-18", status: "Shipped", total: 320, items: 1 }
       ];
 
       setProducts(mockProducts);
@@ -81,21 +71,26 @@ const BuyerDashboard = () => {
       });
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      console.error("Error fetching dashboard data:", error);
       setLoading(false);
     }
   };
 
   const handleViewProducts = () => {
-    navigate('/buyer/products');
+    navigate("/buyer/products");
   };
-
   const handleViewOrders = () => {
-    navigate('/buyer/orders');
+    navigate("/buyer/orders");
   };
-
   const handlePlaceOrder = (productId) => {
     navigate(`/buyer/place-order/${productId}`);
+  };
+  const handleLogout = () => {
+    alert("Logged out!");
+    navigate("/buyer/login");
+  };
+  const handleProfile = () => {
+    navigate("/buyer/profile");
   };
 
   if (loading) {
@@ -105,11 +100,28 @@ const BuyerDashboard = () => {
   return (
     <div className="buyer-dashboard">
       <div className="dashboard-header">
-        <h1>Buyer Dashboard</h1>
-        <p>Welcome to Taru Foundation E-commerce Platform</p>
+        <div>
+          <h1>Buyer Dashboard</h1>
+          <p>Welcome to Taru Foundation E-commerce Platform</p>
+        </div>
+        <div className="user-menu">
+          <div className="user-name" onClick={() => setShowDropdown(!showDropdown)}>
+            👤 {user.name}
+          </div>
+          {showDropdown && (
+            <div className="dropdown-menu">
+              <div className="dropdown-item" onClick={handleProfile}>
+                Profile
+              </div>
+              <div className="dropdown-item" onClick={handleLogout}>
+                Logout
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats Grid */}
       <div className="stats-grid">
         <div className="stat-card">
           <div className="stat-icon">📊</div>
@@ -151,7 +163,7 @@ const BuyerDashboard = () => {
           <button className="action-btn secondary" onClick={handleViewOrders}>
             View My Orders
           </button>
-          <button className="action-btn tertiary" onClick={() => navigate('/buyer/cart')}>
+          <button className="action-btn tertiary" onClick={() => navigate("/buyer/cart")}>
             View Cart
           </button>
         </div>
@@ -166,7 +178,7 @@ const BuyerDashboard = () => {
           </button>
         </div>
         <div className="products-grid">
-          {products.slice(0, 3).map(product => (
+          {products.slice(0, 3).map((product) => (
             <div key={product.id} className="product-card">
               <div className="product-image">
                 <img src={product.image} alt={product.name} />
@@ -181,7 +193,7 @@ const BuyerDashboard = () => {
                   <span className="rating-value">({product.rating})</span>
                 </div>
                 <div className="price">₹{product.price}</div>
-                <button 
+                <button
                   className={`btn ${product.inStock ? 'primary' : 'disabled'}`}
                   onClick={() => product.inStock && handlePlaceOrder(product.id)}
                   disabled={!product.inStock}
@@ -214,7 +226,7 @@ const BuyerDashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {orders.map(order => (
+              {orders.map((order) => (
                 <tr key={order.id}>
                   <td>{order.id}</td>
                   <td>{new Date(order.date).toLocaleDateString()}</td>

@@ -92,7 +92,7 @@ const Home = () => {
             Support rural artisans while discovering unique, quality crafts.
           </p>
           <div className="hero-buttons">
-            <Link to="/products" className="btn btn-primary">
+            <Link to="/buyer/ViewProducts" className="btn btn-primary">
               <ShoppingBag size={20} />
               Shop Now
             </Link>
@@ -174,7 +174,7 @@ const Home = () => {
                 ))}
               </div>
               <div className="text-center mt-4">
-                <Link to="/products" className="btn btn-primary">
+                <Link to="/buyer/ViewProducts" className="btn btn-primary">
                   View All Products
                   <ArrowRight size={20} />
                 </Link>

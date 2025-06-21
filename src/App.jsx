@@ -2,7 +2,6 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './shared/ProtectedRoute';
 
-// Main Pages
 import Home from './main/Home';
 import About from './main/About';
 import Contact from './main/Contact';
@@ -56,14 +55,8 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/buyer/products"
-          element={
-            <ProtectedRoute role="buyer">
-              <ViewProducts />
-            </ProtectedRoute>
-          }
-        />
+        {/* ViewProducts is now accessible to everyone */}
+        <Route path="/buyer/viewproducts" element={<ViewProducts />} />
         <Route
           path="/buyer/cart"
           element={

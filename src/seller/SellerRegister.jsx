@@ -3,41 +3,26 @@ import '../seller/seller.css';
 
 const SellerRegister = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
-    shgName: '',
-    village: '',
-    district: '',
-    state: '',
-    pincode: '',
-    bankAccount: '',
-    ifscCode: '',
-    panNumber: '',
-    aadharNumber: '',
-    businessType: '',
-    productsOffered: ''
+    name: '', email: '', phone: '', password: '', confirmPassword: '',
+    shgName: '', village: '', district: '', state: '', pincode: '',
+    bankAccount: '', ifscCode: '', panNumber: '', aadharNumber: '',
+    businessType: '', productsOffered: ''
   });
-
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    // Validation
+    // Simple Validations
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       setLoading(false);
@@ -50,35 +35,19 @@ const SellerRegister = () => {
       return;
     }
 
-    try {
-      const response = await fetch('/api/seller/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setSuccess(true);
-        setFormData({
-          name: '', email: '', phone: '', password: '', confirmPassword: '',
-          shgName: '', village: '', district: '', state: '', pincode: '',
-          bankAccount: '', ifscCode: '', panNumber: '', aadharNumber: '',
-          businessType: '', productsOffered: ''
-        });
-      } else {
-        setError(data.message || 'Registration failed');
-      }
-    } catch (err) {
-      setError('Network error. Please try again.');
-    } finally {
+    // 👇 Simulated Registration Process
+    setTimeout(() => {
       setLoading(false);
-    }
+      setSuccess(true);
+      setFormData({
+        name: '', email: '', phone: '', password: '', confirmPassword: '',
+        shgName: '', village: '', district: '', state: '', pincode: '',
+        bankAccount: '', ifscCode: '', panNumber: '', aadharNumber: '',
+        businessType: '', productsOffered: ''
+      });
+    }, 1000);
   };
-
+  
   if (success) {
     return (
       <div className="seller-register-container">
@@ -100,12 +69,12 @@ const SellerRegister = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="seller-register-form">
+          
           {error && <div className="error-message">{error}</div>}
 
           {/* Personal Information */}
           <div className="form-section">
             <h3>Personal Information</h3>
-            
             <div className="form-row">
               <div className="form-group">
                 <label htmlFor="name">Full Name *</label>
@@ -119,7 +88,6 @@ const SellerRegister = () => {
                   placeholder="Enter your full name"
                 />
               </div>
-
               <div className="form-group">
                 <label htmlFor="email">Email Address *</label>
                 <input
@@ -147,7 +115,6 @@ const SellerRegister = () => {
                   placeholder="Enter your phone number"
                 />
               </div>
-
               <div className="form-group">
                 <label htmlFor="businessType">Business Type *</label>
                 <select
@@ -182,7 +149,6 @@ const SellerRegister = () => {
                   placeholder="Enter your password"
                 />
               </div>
-
               <div className="form-group">
                 <label htmlFor="confirmPassword">Confirm Password *</label>
                 <input
@@ -215,7 +181,6 @@ const SellerRegister = () => {
                   placeholder="Enter your SHG name"
                 />
               </div>
-
               <div className="form-group">
                 <label htmlFor="village">Village *</label>
                 <input
@@ -243,7 +208,6 @@ const SellerRegister = () => {
                   placeholder="Enter your district"
                 />
               </div>
-
               <div className="form-group">
                 <label htmlFor="state">State *</label>
                 <input
@@ -289,7 +253,6 @@ const SellerRegister = () => {
                   placeholder="Enter your bank account number"
                 />
               </div>
-
               <div className="form-group">
                 <label htmlFor="ifscCode">IFSC Code *</label>
                 <input
@@ -316,7 +279,6 @@ const SellerRegister = () => {
                   placeholder="Enter PAN number"
                 />
               </div>
-
               <div className="form-group">
                 <label htmlFor="aadharNumber">Aadhar Number</label>
                 <input
@@ -370,3 +332,4 @@ const SellerRegister = () => {
 };
 
 export default SellerRegister;
+
