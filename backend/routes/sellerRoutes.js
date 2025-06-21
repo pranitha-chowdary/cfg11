@@ -13,12 +13,13 @@ const { protect, restrictTo } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.post('/products', protect, restrictTo('seller'), addProduct);                 // POST /api/seller/products
-router.put('/products/:id', protect, restrictTo('seller'), updateProduct);           // PUT /api/seller/products/:id
-router.delete('/products/:id', protect, restrictTo('seller'), deleteProduct);        // DELETE /api/seller/products/:id
-router.get('/products', protect, restrictTo('seller'), getSellerProducts);           // GET /api/seller/products
-router.get('/orders', protect, restrictTo('seller'), getSellerOrders);               // GET /api/seller/orders
-router.get('/notifications', protect, restrictTo('seller'), getNotifications);       // GET /api/seller/notifications
-router.put('/notifications/:id', protect, restrictTo('seller'), markNotificationRead); // PUT /api/seller/notifications/:id
+// ✅ Protected SHG Seller Routes
+router.post('/products', protect, restrictTo('shg_seller'), addProduct);                 // Add product
+router.put('/products/:id', protect, restrictTo('shg_seller'), updateProduct);           // Update product
+router.delete('/products/:id', protect, restrictTo('shg_seller'), deleteProduct);        // Delete product
+router.get('/products', protect, restrictTo('shg_seller'), getSellerProducts);           // List seller products
+router.get('/orders', protect, restrictTo('shg_seller'), getSellerOrders);               // List seller orders
+router.get('/notifications', protect, restrictTo('shg_seller'), getNotifications);       // List notifications
+router.put('/notifications/:id', protect, restrictTo('shg_seller'), markNotificationRead); // Mark as read
 
 module.exports = router;
