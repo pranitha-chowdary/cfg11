@@ -1,19 +1,40 @@
 const jwt = require('jsonwebtoken');
 
-const authMiddleware = (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-  if (!token) {
-    return res.status(401).json({ error: 'No token provided' });
-  }
+// ✅ Middleware to protect routes and attach user info to req
+const protect = (req, res, next) => {
+  let token;
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decoded.userId;
-    req.userRole = decoded.role;
-    next();
-  } catch (error) {
-    res.status(401).json({ error: 'Invalid token' });
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    try {
+      token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      // Attach consistent user structure
+      req.user = {
+        userId: decoded.userId,
+        role: decoded.role
+      };
+
+      next();
+    } catch (error) {
+      return res.status(401).json({ message: 'Not authorized' });
+    }
+  } else {
+    return res.status(401).json({ message: 'No token found' });
   }
 };
 
-module.exports = authMiddleware;
+// ✅ Role-based access control middleware
+const restrictTo = (role) => {
+  return (req, res, next) => {
+    if (req.user.role !== role) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+    next();
+  };
+};
+
+module.exports = { protect, restrictTo };
