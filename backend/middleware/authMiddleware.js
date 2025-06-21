@@ -1,10 +1,9 @@
 const jwt = require('jsonwebtoken');
 
-// Middleware to protect routes and attach user info to req
+// ✅ Middleware to protect routes and attach user info to req
 const protect = (req, res, next) => {
   let token;
 
-  // Check for Bearer token in headers
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
@@ -13,10 +12,10 @@ const protect = (req, res, next) => {
       token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Attach user info to request for controller access
+      // Attach consistent user structure
       req.user = {
-        userId: decoded.userId, // ✅ consistent field for user ID
-        role: decoded.role      // ✅ can be 'admin', 'buyer', 'shg_seller'
+        userId: decoded.userId,
+        role: decoded.role
       };
 
       next();
@@ -28,7 +27,7 @@ const protect = (req, res, next) => {
   }
 };
 
-// Role-based access control
+// ✅ Role-based access control middleware
 const restrictTo = (role) => {
   return (req, res, next) => {
     if (req.user.role !== role) {
