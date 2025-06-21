@@ -1,64 +1,16 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-const buyerSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  lastName: {
-    type: String,
-    required: true,
-    trim: true
-  },
+const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
     unique: true,
-    lowercase: true,
-    trim: true
-  },
-  phone: {
-    type: String,
-    required: true,
-    match: /^[6-9]\d{9}$/
   },
   password: {
     type: String,
-    required: true
-  },
-  city: {
-    type: String,
     required: true,
-    trim: true
   },
-  state: {
-    type: String,
-    required: true
-  },
-  pincode: {
-    type: String,
-    required: true,
-    match: /^\d{6}$/
-  },
-  agreeToTerms: {
-    type: Boolean,
-    required: true
-  },
-  newsletter: {
-    type: Boolean,
-    default: false
-  },
-  role: {
-    type: String,
-    default: 'buyer'
-  },
-  registeredAt: {
-    type: Date,
-    default: Date.now
-  }
+  // Add other fields like name, role etc. if needed
 });
 
-const Buyer = mongoose.model('Buyer', buyerSchema);
-
-export default Buyer;
+module.exports = mongoose.model('User', userSchema);
