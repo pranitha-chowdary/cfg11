@@ -630,3 +630,53 @@ body {
   display: flex;
   align-items: center;
 }
+
+/* Utility, Footer, Responsive, etc. */
+/* (All your original utility classes and responsive styles go here unchanged) */
+
+/* Add dropdown styles at the END of your CSS */
+.login-dropdown {
+  position: relative;
+}
+
+.login-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: transparent;
+  border: none;
+  color: var(--white);
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: var(--white);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  padding: 0.5rem 0;
+  border-radius: 12px;
+  z-index: 999;
+}
+
+.dropdown-item {
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  display: block;
+  font-weight: 600;
+  background: transparent;
+  color: #60a5fa !important;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: transparent;
+  color: #60a5fa !important;
+}
