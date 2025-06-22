@@ -1,6 +1,8 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './shared/ProtectedRoute';
+import ManageSellers from "./admin/ManageSellers";
+
 
 import Home from './main/Home';
 import About from './main/About';
@@ -28,6 +30,7 @@ import SellerProfile from './seller/SellerProfile';
 // Admin Pages
 import AdminLogin from './admin/AdminLogin';
 import AdminDashboard from './admin/AdminDashboard';
+
 import AddAdminProduct from './admin/AddProduct';
 import ViewBuyers from './admin/ViewBuyers';
 import ViewSellers from './admin/ViewSellers';
@@ -144,6 +147,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/manage-sellers" element={<ManageSellers />} /> {/* ✅ Add this */}
         <Route
           path="/admin/view-sellers"
           element={

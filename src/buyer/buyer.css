@@ -141,3 +141,34 @@ input:focus {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
 }
+
+
+.role-login-dropdown {
+  position: relative;
+}
+
+.role-dropdown {
+  position: absolute;
+  right: 0;
+  margin-top: 6px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.role-dropdown .dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.role-dropdown .dropdown-item:hover {
+  background-color: #f1f1f1;
+}

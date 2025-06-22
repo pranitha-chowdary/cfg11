@@ -11,37 +11,29 @@ const SellerLogin = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    try {
-      const response = await fetch('/api/seller/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
+    // Dummy credentials
+    const dummyEmail = 'seller@gmail.com';
+    const dummyPassword = '123456';
 
-      const data = await response.json();
-
-      if (response.ok) {
-        login(data.seller, data.token, 'seller');
-        navigate('/seller/dashboard'); // Redirect to seller dashboard
-      } else {
-        setError(data.message || 'Login failed');
-      }
-    } catch (err) {
-      setError('Network error. Please try again.');
-    } finally {
-      setLoading(false);
+    if (formData.email === dummyEmail && formData.password === dummyPassword) {
+      login({ email: formData.email }, 'dummy_token', 'seller');
+      navigate('/seller/dashboard');
+    } else {
+      setError('Invalid email or password');
     }
+
+    setLoading(false);
   };
 
   return (
@@ -81,15 +73,19 @@ const SellerLogin = () => {
             />
           </div>
 
-          <button type="submit" className="seller-login-btn" disabled={loading}>
+          <button
+            type="submit"
+            className="seller-login-btn"
+            disabled={loading}
+          >
             {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
 
         <div className="seller-login-footer">
           <p>
-            Don't have an account? 
-            <a href="/seller/register"> Register as Seller</a>
+            Don't have an account?{' '}
+            <a href="/seller/register">Register as Seller</a>
           </p>
           <a href="/forgot-password">Forgot Password?</a>
         </div>

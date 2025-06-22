@@ -86,51 +86,41 @@ const ViewCart = () => {
     return uniqueSellers.size * 50;
   };
   const calculateTotal = () => calculateSubtotal() + calculateShipping();
-  const handleCheckout = () => {
-    console.log('Proceeding to checkout with items:', cartItems);
+ const handleCheckout = async () => {
+  const res = await loadRazorpayScript();
+
+  if (!res) {
+    alert("Razorpay SDK failed to load. Check your internet connection.");
+    return;
+  }
+
+  const options = {
+    key: "rzp_test_uNJL19rZ2qU58W", // Replace with your Razorpay key_id from dashboard
+    amount: calculateTotal() * 100, // Amount in paise
+    currency: "INR",
+    name: "RuralKart", // Your store name
+    description: "Order Payment",
+    image: "/logo.png", // Optional: replace with your logo URL or remove
+    handler: function (response) {
+      alert(`Payment successful! Payment ID: ${response.razorpay_payment_id}`);
+      // TODO: Call backend to confirm order
+    },
+    prefill: {
+      name: "Customer Name",
+      email: "customer@example.com",
+      contact: "9999999999"
+    },
+    notes: {
+      address: "Customer Address"
+    },
+    theme: {
+      color: "#3399cc"
+    }
   };
-  if (loading) {
-    return (
-      <div className="loading-container">
-        <div className="loading-content">
-          <div className="loading-spinner"></div>
-          <p className="loading-text">Loading your cart...</p>
-        </div>
-      </div>
-    );
-  }
-  if (error) {
-    return (
-      <div className="error-container">
-        <div className="error-content">
-          <p className="error-message">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="retry-button"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
-  if (cartItems.length === 0) {
-    return (
-      <div className="empty-cart">
-        <ShoppingBag className="empty-cart-icon" />
-        <h2 className="empty-cart-title">Your cart is empty</h2>
-        <p className="empty-cart-description">
-          Discover amazing products from rural artisans and farmers
-        </p>
-        <button
-          onClick={() => window.history.back()}
-          className="continue-shopping-button"
-        >
-          Continue Shopping
-        </button>
-      </div>
-    );
-  }
+
+  const paymentObject = new window.Razorpay(options);
+  paymentObject.open();
+};
 
   return (
     <div className="view-cart">
@@ -254,5 +244,56 @@ const ViewCart = () => {
     </div>
   );
 };
+
+
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement('script');
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
+const handleCheckout = async () => {
+  const res = await loadRazorpayScript();
+
+  if (!res) {
+    alert("Failed to load Razorpay SDK. Please check your internet.");
+    return;
+  }
+
+  // Example: Order amount and user details
+  const amountInPaise = calculateTotal() * 100;
+
+  const options = {
+    key: "rzp_test_YourKeyHere", // Replace with your Razorpay Test Key
+    amount: amountInPaise,
+    currency: "INR",
+    name: "RuralCart",
+    description: "Support Rural Sellers",
+    image: "https://yourcdnlink.com/logo.png", // Optional logo
+    handler: function (response) {
+      alert("Payment Successful!");
+      console.log(response);
+      // You can POST this response to backend for verification
+    },
+    prefill: {
+      name: user.name,
+      email: user.email,
+    },
+    notes: {
+      address: "E-commerce Cart Checkout",
+    },
+    theme: {
+      color: "#3399cc",
+    },
+  };
+
+  const paymentObject = new window.Razorpay(options);
+  paymentObject.open();
+};
+
 
 export default ViewCart;

@@ -163,6 +163,7 @@ const ViewProducts = () => {
       return [...prev, { ...product, quantity: 1 }];
     });
   };
+  
   const categories = ['all', 'Textiles', 'Food & Spices', 'Handicrafts', 'Home Decor', 'Beauty & Personal Care'];
 
   return (
